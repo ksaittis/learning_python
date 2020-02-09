@@ -6,13 +6,13 @@ import multiprocessing
 def do_something(seconds: int) -> str:
     print(f'Sleeping for {seconds}')
     time.sleep(seconds)
-    return 'Done sleeping...'
+    return f'Done sleeping...{seconds}'
 
 
 def main():
     start = time.perf_counter()
 
-    use_concurrent_module(10)
+    use_concurrent_module()
     # use_multiprocessing_module()
 
     finish = time.perf_counter()
@@ -20,11 +20,16 @@ def main():
     print(f'Time taken to run is {round(finish - start, 2)}')
 
 
-def use_concurrent_module(num_processes: int) -> None:
+def use_concurrent_module() -> None:
+    secs = [5, 4, 3, 2, 1]
     with concurrent.futures.ProcessPoolExecutor() as executor:
-        futures = [executor.submit(do_something, 1) for _ in range(num_processes)]
-        for f in concurrent.futures.as_completed(futures):
-            print(f.result())
+        results = executor.map(do_something, secs)
+        for result in results:
+            print(result)
+        # futures = [executor.submit(do_something, second) for second in secs]
+
+        # for f in concurrent.futures.as_completed(futures):
+        #     print(f.result())
 
 
 def use_multiprocessing_module():
