@@ -1,3 +1,4 @@
+from concurrent.futures import ThreadPoolExecutor
 import os
 import sys
 import time
@@ -39,9 +40,11 @@ def display_prices_on_terminal() -> None:
 
 
 print(f'Symbols passed {coins}')
-for coin, _ in prices.items():
-    t = threading.Thread(target=update_price, args=(coin,))
-    t.start()
+# for coin, _ in prices.items():
+with ThreadPoolExecutor() as executor:
+    executor.map(update_price, prices.keys())
+    # t = threading.Thread(target=update_price, args=(coin,))
+    # t.start()
 
 try:
     while True:
